@@ -29,15 +29,40 @@ def depthFirstSearch(problem: SearchProblem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     # TODO: Add your code here
-    utils.raiseNotDefined()
-
+    pila = utils.Stack
+    estado_inicial = problem.getStartState()
+    pila.push((estado_inicial, []))
+    visitados = set()
+    while not pila.isEmpty():
+        estado, acciones = pila.pop()
+        if problem.isGoalState(estado):
+            return acciones
+        if estado not in visitados:
+            visitados.add(estado)
+            for sucesor, accion, _ in problem.getSuccessors(estado):
+                pila.push((sucesor, acciones + [accion]))
+                
+    return []  
 
 def breadthFirstSearch(problem: SearchProblem):
     """
     Search the shallowest nodes in the search tree first.
     """
     # TODO: Add your code here
-    utils.raiseNotDefined()
+    cola = utils.Queue()
+    estado_inicial = problem.getStartState()
+    cola.push((estado_inicial, []))
+    visitados = set()
+    while not cola.isEmpty():
+        estado, acciones = cola.pop()
+        if problem.isGoalState(estado):
+                return acciones
+        if estado not in visitados:
+                visitados.add(estado)
+                for sucesor, accion, _ in problem.getSuccessors(estado):
+                    cola.push((sucesor, acciones + [accion]))
+                    
+    return []  
 
 
 def uniformCostSearch(problem: SearchProblem):
@@ -46,7 +71,19 @@ def uniformCostSearch(problem: SearchProblem):
     """
 
     # TODO: Add your code here
-    utils.raiseNotDefined()
+    prioridad = utils.PriorityQueue()
+    estado_inicial = problem.getStartState()
+    prioridad.push((estado_inicial, [], 0), 0)
+    visitados = set()
+    while not prioridad.isEmpty():
+        estado, acciones, costo = prioridad.pop()
+        if problem.isGoalState(estado):
+            return acciones
+        if estado not in visitados:
+            visitados.add(estado)
+            for sucesor, accion, costo_sucesor in problem.getSuccessors(estado):
+                prioridad.push((sucesor, acciones + [accion], costo + costo_sucesor), costo + costo_sucesor)
+    return []
 
 
 def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
