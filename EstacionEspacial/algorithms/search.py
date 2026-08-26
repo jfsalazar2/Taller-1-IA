@@ -29,7 +29,7 @@ def depthFirstSearch(problem: SearchProblem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     # TODO: Add your code here
-    pila = utils.Stack
+    pila = utils.Stack()
     estado_inicial = problem.getStartState()
     pila.push((estado_inicial, []))
     visitados = set()
@@ -90,8 +90,39 @@ def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
     """
     Search the node that has the lowest combined cost and heuristic first.
     """
-    # TODO: Add your code here
-    utils.raiseNotDefined()
+    # cola de prioridad para ir sacando el mejor nodo cada vez
+    cola = utils.PriorityQueue()
+    
+    inicio = problem.getStartState()
+    # metemos el inicio: (estado, camino recorrido, costo acumulado)
+    cola.push((inicio, [], 0), heuristic(inicio, problem))
+    
+    # aqui guardamos el mejor costo que hemos encontrado para cada estado
+    costos = {inicio: 0}
+    
+    while not cola.isEmpty():
+        estado, camino, costo = cola.pop()
+        
+        # si ya encontramos algo mejor para este estado, lo saltamos
+        if costo > costos.get(estado, float("inf")):
+            continue
+        
+        # si llegamos a la meta, ya ganamos
+        if problem.isGoalState(estado):
+            return camino
+        
+        # revisamos a donde nos podemos mover desde aqui
+        for sucesor, accion, costoPaso in problem.getSuccessors(estado):
+            nuevoCosto = costo + costoPaso
+            
+            # solo nos interesa si es mejor que lo que ya teniamos
+            if nuevoCosto < costos.get(sucesor, float("inf")):
+                costos[sucesor] = nuevoCosto
+                prioridad = nuevoCosto + heuristic(sucesor, problem)
+                cola.push((sucesor, camino + [accion], nuevoCosto), prioridad)
+    
+    # si no encontramos nada, pues no hay camino
+    return []
 
 
 # Abbreviations (you can use them for the -f option in main.py)
