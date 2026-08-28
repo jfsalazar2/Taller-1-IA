@@ -1,6 +1,5 @@
 from typing import Tuple
 
-from django.db.migrations import state
 from algorithms import utils
 from algorithms.problems import SystemRepairProblem
 
